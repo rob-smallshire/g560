@@ -34,8 +34,8 @@ def find_optimal_permutations_for_node(gewirtz_svg_filepath, p=None):
         print(targets)
 
         min_aspl = float("+inf")
-        t = s.copy()
-        gp_edges = []
+        t = s.copy()     # We add and remove edges from a single copy of the graph
+        gp_edges = []    # rather than making a new graph every time for performance reasons
         for i, target_g_nodes in enumerate(permutations(targets)):
             #print(target_g_nodes)
 
@@ -54,6 +54,7 @@ def find_optimal_permutations_for_node(gewirtz_svg_filepath, p=None):
             #assert len(t) == 65
             #assert len(t.edges) == 295
 
+            # TODO: Remember which permuation improved the ASPL!
             aspl = average_shortest_path_length(t)
             min_aspl = min(min_aspl, aspl)
 
@@ -64,9 +65,7 @@ def find_optimal_permutations_for_node(gewirtz_svg_filepath, p=None):
             #assert len(t) == 65
             #assert len(t.edges) == 285
 
-
-
-        break
+        break  # Stop after one node, during testing
 
 if __name__ == '__main__':
     find_optimal_permutations_for_node("/Users/rjs/dev/g560/embeddings/Gewirtz_graph_embeddings_1.svg")
