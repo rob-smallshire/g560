@@ -10,8 +10,9 @@ from g560 import make, make_symmetrical
 def main():
     """Interrograte the g560 graph.
     """
-    g560 = make_symmetrical()
-    print("g560 (a.k.a GP-graph)")
+    # g560 = make_symmetrical("/Users/rjs/dev/g560/embeddings/Gewirtz_graph_embeddings_4.svg")
+    # print("g560 (a.k.a GP-graph)")
+    g560 = make()
     print("=====================")
     print()
     print("Number of nodes :", len(g560))

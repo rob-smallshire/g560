@@ -74,7 +74,7 @@ def extract_symmetry_from_vertex_and_edge_lists(vertices, edges):
 
     #print('*' * 10)
 
-    pprint(offset_edges)
+    # pprint(offset_edges)
 
     #print('*' * 10)
 
@@ -91,16 +91,16 @@ def extract_symmetry_from_vertex_and_edge_lists(vertices, edges):
         element_selector=lambda sorted_offset_group: sorted_offset_group[0],
         result_selector=lambda key, group: (key, tuple(sorted(group)))).to_list()
 
-    pprint(sorted_offsets_sets_to_sources)
-    print('*' * 10)
+    # pprint(sorted_offsets_sets_to_sources)
+    # print('*' * 10)
 
-    print(len(sorted_offsets_sets_to_sources))
-    print('*' * 10)
+    # print(len(sorted_offsets_sets_to_sources))
+    # print('*' * 10)
 
     sources_to_sorted_offsets = sorted(((q, p) for p, q in sorted_offsets_sets_to_sources), key=lambda w: w[0])
 
-    pprint(sources_to_sorted_offsets)
-    print('*' * 10)
+    # pprint(sources_to_sorted_offsets)
+    # print('*' * 10)
     return sources_to_sorted_offsets
 
 
