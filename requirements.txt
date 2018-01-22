@@ -1,6 +1,6 @@
 asq>=1.2.1
 decorator==4.1.2
--e git+git@bitbucket.org:sixty-north/euclidian.git@3eb188f46b2c59dde82ce399502dba79c5efe69c#egg=euclidian
+euclidian>=0.9.2
 lxml==4.1.1
 networkx==2.0
 numpy==1.13.3
