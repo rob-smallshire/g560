@@ -1,9 +1,9 @@
 from collections import Counter
-from pprint import pprint
+from itertools import chain
 
 from asq import query
 
-from read_svg_embedding import vertex_and_edge_lists_from_svg_file
+from g560.read_svg_embedding import vertex_and_edge_lists_from_svg_file
 
 
 def extract_symmetry_from_svg_file(svg_filepath):
@@ -62,15 +62,15 @@ def extract_symmetry_from_vertex_and_edge_lists(vertices, edges):
         between vertices, when in fact the graph has only 280 edges.
     """
     # Add all edges in both directions to help us find symmetries
-    reversed_edges = [(b, a) for a, b in edges]
-    edges.extend(reversed_edges)
+    reversed_edges = ((b, a) for a, b in edges)
+    all_edges = chain(edges, reversed_edges)
 
     #pprint(edges)
 
     assert len(vertices) == 56
 
     offset_edges = [(from_vertex_index, (to_vertex_index - from_vertex_index) % len(vertices))
-                    for from_vertex_index, to_vertex_index in edges]
+                    for from_vertex_index, to_vertex_index in all_edges]
 
     #print('*' * 10)
 
@@ -97,7 +97,7 @@ def extract_symmetry_from_vertex_and_edge_lists(vertices, edges):
     # print(len(sorted_offsets_sets_to_sources))
     # print('*' * 10)
 
-    sources_to_sorted_offsets = sorted(((q, p) for p, q in sorted_offsets_sets_to_sources), key=lambda w: w[0])
+    sources_to_sorted_offsets = tuple(sorted(((q, p) for p, q in sorted_offsets_sets_to_sources), key=lambda w: w[0]))
 
     # pprint(sources_to_sorted_offsets)
     # print('*' * 10)

@@ -6,10 +6,9 @@ from pprint import pprint
 
 from networkx import Graph, union
 
-import gewirtz
-import petersen
-from analyze_symmetry import extract_symmetry_from_vertex_and_edge_lists
-from read_svg_embedding import vertex_and_edge_lists_from_svg_file, graph_from_vertex_and_edge_lists
+from g560 import gewirtz, petersen
+from g560.analyze_symmetry import extract_symmetry_from_vertex_and_edge_lists
+from g560.read_svg_embedding import vertex_and_edge_lists_from_svg_file, graph_from_vertex_and_edge_lists
 
 
 def make(g=None, p=None):
@@ -105,6 +104,74 @@ def make_symmetrical(gewirtz_svg_filepath="/Users/rjs/dev/g560/embeddings/Gewirt
             s_target = '{}-{}'.format(g_target, p_target)
             print("{} -- {}".format(s_source, s_target))
             s.add_edge(s_source, s_target)
+
+    return s
+
+def make_symmetrical_from_permutation(
+        genome,
+        gewirtz_svg_filepath="/Users/rjs/dev/g560/embeddings/Gewirtz_graph_embeddings_1.svg", p=None):
+    """Make a g560 graph, respecting any symmetries in the specified Gewirtz graph.
+
+    The separate node numbering schemes of the Gewirtz and Peterson graphs are
+    preserved in the labelling scheme of the nodes in the new graph, which have
+    will be strings of the form "G-P" where G and P are the respective names from
+    the supplied Gpewirtz and Peterson graphs.
+
+    Args:
+        gewirtz_svg_filepath: An SVG file containing data containing a symmetrical representation
+            of the Gewirtz graph.
+        p: An optional Peterson graph. If not supplied the default Peterson graph will be used.
+
+    Returns:
+        A g560 graph.
+    """
+
+    g_vertex_list, g_edge_list = vertex_and_edge_lists_from_svg_file(gewirtz_svg_filepath)
+
+    g = graph_from_vertex_and_edge_lists(g_vertex_list, g_edge_list)
+    p = p or petersen.make()
+
+    s = Graph()
+
+    # Add 560 nodes by adding one Petersen graph (10 nodes) for each
+    # of the 56 nodes of the gewirtz graph.
+    for g_node in g.nodes:
+        s = union(s, p, rename=('', '{}-'.format(g_node)))
+
+    assert len(s.nodes) == 560
+    assert len(s.edges) == 56 * 15
+
+    sources_to_offsets = extract_symmetry_from_vertex_and_edge_lists(g_vertex_list, g_edge_list)
+
+    source_to_ordered_edges = OrderedDict()
+    for sources, offsets in sources_to_offsets:
+        for source in sources:
+            targets = [(source + offset) % len(g_vertex_list) for offset in offsets]
+            source_to_ordered_edges[source] = targets
+    #pprint(source_to_ordered_edges)
+
+    for g_source, g_targets in source_to_ordered_edges.items():
+
+        # The permutation-gene associated with g_source tells us how the
+        # g out-edges (g_source, g_target) are mapped onto the Petersen graph
+
+        # TODO: Look-up the permutation for this g_source in the genome
+        g_source_permutation = genome[g_source % len(genome)]
+
+        for out_index, g_target in enumerate(g_targets):
+            p_source = g_source_permutation.index(out_index)
+
+            g_target_permutation = genome[g_target % len(genome)]
+            back_index = source_to_ordered_edges[g_target].index(g_source)
+            p_target = g_target_permutation.index(back_index)
+
+            s_source = '{}-{}'.format(g_source, p_source)
+            s_target = '{}-{}'.format(g_target, p_target)
+            #print("{} -- {}".format(s_source, s_target))
+            s.add_edge(s_source, s_target)
+
+    assert len(s.nodes) == 560
+    assert len(s.edges) == 56*15 + 280
 
     return s
 

@@ -1,3 +1,4 @@
+from functools import lru_cache
 from pprint import pprint
 from statistics import mean
 
@@ -6,6 +7,7 @@ from lxml import etree
 from networkx import Graph
 
 
+@lru_cache()
 def vertex_and_edge_lists_from_svg_file(svg_filepath):
     """Read an SVG representation of a graph.
 
@@ -93,9 +95,9 @@ def vertex_and_edge_lists_from_svg_elements(node_group, edge_group):
         geometric_edges.append(edge)
 
     vertices = range(len(geometric_vertices))
-    edges = [(geometric_vertices.index(from_vertex),
+    edges = tuple((geometric_vertices.index(from_vertex),
               geometric_vertices.index(to_vertex))
-             for from_vertex, to_vertex in geometric_edges]
+             for from_vertex, to_vertex in geometric_edges)
     return vertices, edges
 
 

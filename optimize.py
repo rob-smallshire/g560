@@ -1,10 +1,10 @@
 from itertools import permutations
 
-from networkx import Graph, union, average_shortest_path_length, diameter
+from networkx import Graph, union, average_shortest_path_length
 
-import petersen
-from analyze_symmetry import extract_symmetry_from_vertex_and_edge_lists
-from read_svg_embedding import vertex_and_edge_lists_from_svg_file, graph_from_vertex_and_edge_lists
+from g560 import petersen
+from g560.analyze_symmetry import extract_symmetry_from_vertex_and_edge_lists
+from g560.read_svg_embedding import vertex_and_edge_lists_from_svg_file, graph_from_vertex_and_edge_lists
 
 
 def find_optimal_permutations_for_node(gewirtz_svg_filepath, p=None):
